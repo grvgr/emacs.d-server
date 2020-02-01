@@ -79,3 +79,6 @@
 
 ;;; disable bells completely
 (setq ring-bell-function 'ignore)
+
+;;; disable menu bar
+(if (not window-system) (menu-bar-mode -1))
