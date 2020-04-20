@@ -8,19 +8,13 @@
 (setq auto-save-file-name-transforms
       `((".*" "/tmp/emacs.tmp" t)))
 
-;; remove trailing whitespace on save
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
-
-;; add final newline on save
-(setq require-final-newline t)
-
 ;; effective emacs http://steve.yegge.googlepages.com/effective-emacs
-(global-set-key "\C-s" 'isearch-forward-regexp)
-(global-set-key "\C-r" 'isearch-backward-regexp)
+(global-set-key "\C-s"     'isearch-forward-regexp)
+(global-set-key "\C-r"     'isearch-backward-regexp)
 (global-set-key "\C-x\C-b" 'ibuffer)
 (global-set-key "\C-x\C-m" 'execute-extended-command)
 (global-set-key "\C-c\C-m" 'execute-extended-command)
-(global-set-key "\C-w" 'backward-kill-word)
+(global-set-key "\C-w"     'backward-kill-word)
 (global-set-key "\C-x\C-k" 'kill-region)
 (global-set-key "\C-c\C-k" 'kill-region)
 (global-set-key "\C-c\C-r" 'revert-buffer)
@@ -30,10 +24,10 @@
 (set-default 'fill-column 200)
 
 ;; window movement
-(global-set-key [S-left] 'windmove-left)
+(global-set-key [S-left]  'windmove-left)
 (global-set-key [S-right] 'windmove-right)
-(global-set-key [S-up] 'windmove-up)
-(global-set-key [S-down] 'windmove-down)
+(global-set-key [S-up]    'windmove-up)
+(global-set-key [S-down]  'windmove-down)
 
 ;;; Movement in iTerm2
 (define-key input-decode-map "\e[1;5A" [C-up])
@@ -47,27 +41,25 @@
 (global-set-key "\M-3" 'split-window-horizontally)
 (global-set-key "\M-0" 'delete-window)
 
-;;; dired
-(setq dired-listing-switches "-alh")
+(setq dired-listing-switches "-alh")                     ;; dired
 
-;;; show line and column numbers
-(line-number-mode 1)
-(column-number-mode 1)
+(line-number-mode 1)                                     ;; show line numbers
+(column-number-mode 1)                                   ;; show column numbers
 
-;; scroll one line at a time (less "jumpy" than defaults)
-(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
-(setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
-(setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
-(setq scroll-step 1) ;; keyboard scroll one line at a time
+(add-hook 'before-save-hook 'delete-trailing-whitespace) ;; remove trailing whitespace on save
+(setq require-final-newline t)                           ;; add final newline on save
 
-;;; disable bells completely
-(setq ring-bell-function 'ignore)
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))      ;; scroll one line at a time
+(setq mouse-wheel-progressive-speed nil)                 ;; don't accelerate scrolling
+(setq mouse-wheel-follow-mouse 't)                       ;; scroll window under mouse
+(setq scroll-step 1)                                     ;; keyboard scroll one line at a time
 
-;;; disable menu bar
-(if (not window-system) (menu-bar-mode -1))
 
-;; short confirmations
-(defalias 'yes-or-no-p 'y-or-n-p)
+(setq ring-bell-function 'ignore)                        ;; disable bells completely
+
+(if (not window-system) (menu-bar-mode -1))              ;; disable menu bar
+
+(defalias 'yes-or-no-p 'y-or-n-p)                        ;; short confirmations
 
 ;;; recent file
 (require 'recentf)
@@ -78,7 +70,7 @@
   (let* ((file-assoc-list
           (mapcar (lambda (x) (cons (file-name-nondirectory x) x)) recentf-list))
          (filename-list
-          (remove-duplicates (mapcar #'car file-assoc-list)
+          (cl-remove-duplicates (mapcar #'car file-assoc-list)
                              :test #'string=))
          (filename (ido-completing-read "Choose recent file: "
                                         filename-list
@@ -86,5 +78,7 @@
                                         t)))
     (when filename
       (find-file (cdr (assoc filename file-assoc-list))))))
+
+(setq ido-use-virtual-buffers t)
 
 (global-set-key "\C-xf" 'recentf-ido-find-file)
